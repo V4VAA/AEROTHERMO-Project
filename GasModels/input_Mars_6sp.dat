@@ -1,0 +1,8 @@
+Enter gas species
+CO2 CO O2 O N2 N 
+Enter STP gas composition
+0.95 CO2 0.05 N2 
+Enter reaction mechanism (need N-3-i if e- present, N-2-i otherwise, i=#inert elements) 
+1/2 O2 = O 
+1/2 N2 = N
+1/2 O2 + CO = CO2

@@ -1,0 +1,6 @@
+Enter gas species
+O2 O  Ar
+Enter STP gas composition
+0.5 O2 0.5 Ar
+Enter reaction mechanism (need N-3-i if e- present, N-2-i otherwise, i=#inert elements) 
+1/2 O2 = O 

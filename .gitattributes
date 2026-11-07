@@ -1,0 +1,4 @@
+# Preserve the course-supplied files byte for byte.
+/EquilFlow/** -text
+/GasModels/** -text
+/Species/** -text

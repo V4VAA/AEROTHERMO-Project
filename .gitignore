@@ -1,0 +1,14 @@
+/build/
+/out/
+/cmake-build-*/
+/.vs/
+/.vscode/
+/CMakeUserPresets.json
+*.exe
+*.ilk
+*.obj
+*.pdb
+*.lib
+!/EquilFlow/Debug/EquilFlowLib.lib
+!/EquilFlow/Release/EquilFlowLib.lib
+jacobi_out.dat

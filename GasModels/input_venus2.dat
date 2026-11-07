@@ -1,0 +1,11 @@
+Enter gas species
+CO2 CO N2 N NO O2 O O+ N+ e-
+Enter STP gas composition (Venus)
+0.965 CO2 0.035 N2  
+Enter reaction mechanism (need N-1-z-i if e- present, N-1-z-i otherwise, z= #atom balances, i=#inert elements) 
+1/2 O2 = O 
+1/2 O2 + CO = CO2
+1/2 N2 = N
+N + O = NO
+O = O+ + e-
+N = N+ + e-
