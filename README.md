@@ -1,7 +1,32 @@
-# AE4080 C++
+# AEROTHERMO Project
 
 The AE4080 driver computes freestream properties and normal and oblique
-shock results using EquilFlow. The repository is organized as follows.
+shock results using EquilFlow.
+
+## Set up on a new Windows PC
+
+The EquilFlow binaries require a 64-bit Windows build with MSVC. In Visual
+Studio Installer, install **Visual Studio 2022** or **Build Tools for Visual
+Studio 2022** with the **Desktop development with C++** workload. Include
+the **MSVC v143 x64/x86 build tools**, a **Windows 10 or 11 SDK**, and
+**C++ CMake tools for Windows**. The project needs CMake 3.21 or newer.
+See [Microsoft's Build Tools component list](https://learn.microsoft.com/en-us/visualstudio/install/workload-component-id-vs-build-tools?view=vs-2022).
+
+Install [Git for Windows](https://git-scm.com/install/windows), then open
+PowerShell in the directory where you want the project and run:
+
+```powershell
+git clone https://github.com/V4VAA/AEROTHERMO-Project.git
+cd AEROTHERMO-Project
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\build.ps1 -Run
+```
+
+The helper uses the CMake installation on PATH or the copy installed with
+Visual Studio. The first run builds the Release executable and prints the
+freestream and shock results. The execution policy flag applies to that
+PowerShell process.
+
+## Repository layout
 
 | Path | Contents |
 | --- | --- |
@@ -10,13 +35,9 @@ shock results using EquilFlow. The repository is organized as follows.
 | `GasModels/`, `Species/` | EquilFlow runtime data. |
 | `examples/HW1.cpp` | Standalone EquilFlow composition example. |
 
-## Build and run
+## Build options
 
-Requires Visual Studio 2022 C++ Build Tools (MSVC x64 and a Windows SDK),
-and CMake 3.21 or newer. The PowerShell helper finds CMake on PATH or in
-the Visual Studio installation. No developer shell is needed.
-
-From PowerShell in this folder:
+From PowerShell at the repository root:
 
 ```powershell
 .\build.ps1 -Run
@@ -30,13 +51,10 @@ Every run through the helper first builds the selected target and stops if
 configuration or compilation fails. CMake tracks source/header dependencies,
 so unchanged files are not recompiled. `All` builds both executables.
 
-If local PowerShell execution policy blocks the script, invoke it with:
+If your PowerShell execution policy blocks direct script execution, use
+the quick-start command above with the same target or configuration flags.
 
-```powershell
-powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\build.ps1 -Run
-```
-
-When CMake is on PATH, the equivalent commands are:
+With CMake on PATH, you can also configure and build directly:
 
 ```powershell
 cmake --preset msvc

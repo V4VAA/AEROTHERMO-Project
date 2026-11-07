@@ -27,7 +27,7 @@ if ($cmakeCommand) {
     if (-not (Test-Path -LiteralPath $cmakePath)) { throw 'Install CMake tools in Visual Studio Installer, or add CMake to PATH.' }
 }
 
-Push-Location $PSScriptRoot
+Push-Location -LiteralPath $PSScriptRoot
 try {
     & $cmakePath --preset msvc
     if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
