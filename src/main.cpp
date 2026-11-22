@@ -65,6 +65,9 @@ int main() {
                 << " Pa, rho1/rho2 = " << epsilon << '\n'
                 << "    Mixture viscosity: " << normal.mu_mix << " Pa s\n"
                 << "    Mixture conductivity: " << normal.k_f << " W/(m K)\n"
+                << "    " << (normal.courseMix.usesArmalySutton ? "Armaly-Sutton" : "Wilke")
+                << " comparison: mu = " << normal.courseMix.viscosity << " Pa s, k = "
+                << normal.courseMix.conductivity << " W/(m K)\n"
                 << "    Average D_im: " << normal.D_im_avg_cm2s << " cm^2/s\n"
                 << "    Sutherland comparison: mu = " << normal.mu_sutherland
                 << " Pa s, k = " << normal.k_sutherland << " W/(m K)\n";

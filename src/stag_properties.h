@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "ArmSutMixing.h"
+
 struct ShockState {
     double Temperature = 0.0;
     double Pressure = 0.0;
@@ -44,6 +46,7 @@ struct Results {
     PhiTable phiTable;
     double mu_mix = 0.0;
     double k_f = 0.0;
+    CourseTransportMix courseMix;
     std::vector<double> D_im_cm2s;
     double D_im_avg_cm2s = 0.0;
     double mu_sutherland = 0.0;

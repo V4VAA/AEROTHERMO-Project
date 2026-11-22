@@ -43,6 +43,7 @@ Results stagProperties(const EquilFlow& postShock, double M_inf, double rho_inf,
                  results.D_im_avg_cm2s, results.mu_sutherland, results.k_sutherland,
                  results.speciesTable, results.phiTable) =
             compute_transport_from_eqs(results.shock, M_inf > 15.0 ? 2 : 1);
+        results.courseMix = computeCourseTransportMix(results.speciesTable);
     } else {
         results.WaveAngle = results.shock.WaveAngle;
         results.U2 = results.shock.DownstreamVelocity;

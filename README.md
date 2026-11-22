@@ -3,11 +3,11 @@
 ## Set up on a new Windows PC
 
 The EquilFlow binaries require a 64-bit Windows build with MSVC. In Visual
-Studio Installer, install **Visual Studio 2022** or **Build Tools for Visual
-Studio 2022** with the **Desktop development with C++** workload. Include
-the **MSVC v143 x64/x86 build tools**, a **Windows 10 or 11 SDK**, and
-**C++ CMake tools for Windows**. The project needs CMake 3.21 or newer.
-See [Microsoft's Build Tools component list](https://learn.microsoft.com/en-us/visualstudio/install/workload-component-id-vs-build-tools?view=vs-2022).
+Studio Installer, install **Visual Studio 2026** or **Build Tools for Visual
+Studio 2026** with the **Desktop development with C++** workload. Include
+the **MSVC v145 x64/x86 build tools**, a **Windows 10 or 11 SDK**, and
+**C++ CMake tools for Windows**. The Visual Studio 2026 preset needs CMake
+4.2 or newer.
 
 Install [Git for Windows](https://git-scm.com/install/windows), then open
 PowerShell in the directory where you want the project and run:
@@ -15,25 +15,29 @@ PowerShell in the directory where you want the project and run:
 ```powershell
 git clone https://github.com/V4VAA/AEROTHERMO-Project.git
 cd AEROTHERMO-Project
+git switch phase-2
 powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\build.ps1 -Run
 ```
 
-The helper uses the CMake installation on PATH or the copy installed with
-Visual Studio. The first run builds the Release executable and writes
+The helper prefers the CMake copy installed with Visual Studio and falls
+back to CMake on PATH. The first run builds the Release executable and writes
 `aero_results.csv` in the repository root. The execution policy flag applies
 to that PowerShell process.
-
-In VS Code, select **Run main** and press **Ctrl+F5** to build and run, or
-**F5** to debug. This launcher requires the Microsoft C/C++ extension.
 
 ## Repository layout
 
 | Path | Contents |
 | --- | --- |
 | `src/` | Project driver, atmosphere and shock routines, and the cone aerodynamics routine. |
-| `EquilFlow/` | Course-supplied Phase 2 header and precompiled Debug and Release libraries for MSVC x64. |
+| `EquilFlow/` | Course-supplied Phase 3 header and precompiled Debug and Release libraries for MSVC x64. |
 | `GasModels/`, `Species/` | EquilFlow runtime data. |
 | `examples/HW1.cpp` | Standalone EquilFlow composition example. |
+
+The normal-shock output includes a comparison based on the course's
+`ArmSutMixing.cpp`. It applies Armaly–Sutton to gas models that include
+electrons and Wilke to the other models, using the project's species
+viscosities and conductivities. Electron transport is omitted in the
+comparison, as in the course code.
 
 ## Build options
 
@@ -59,7 +63,7 @@ With CMake on PATH, you can also configure and build directly:
 ```powershell
 cmake --preset msvc
 cmake --build --preset release --target AE4080 --parallel 1 -- /nr:false
-.\build\cmake\bin\Release\AE4080.exe
+.\build\cmake-vs2026\bin\Release\AE4080.exe
 ```
 
 Run executables directly from the repository root because EquilFlow reads

@@ -25,6 +25,7 @@ using namespace std;
 		~EquilFlow();
 
 		int GasModel;
+
 		double Pinf,Tinf,rho_inf,Uinf,ainf;
 		double CN, CA, CD, CL, LOD, CPmax;
 		vector<double> freestream;
@@ -35,7 +36,8 @@ using namespace std;
 		vector<double> ObliqueShock(double pressure, double temperature, double U1, double theta, double Beta_override = 0);
 		vector<double> AeroSphereCone(double eps, double delta, double rn, double rb, double AoA);
 		vector<double> StagFayRiddell(double T, double P, double U, double rnose, int wall);
-		void AeroEllipsoid(double eps, double delta, double AoA);
+		void AeroEllipsoid(double eps, double AoA);//input angle of attack in degrees
+		void BiParaAero(double L, double c, double eps, double delta, double AoA);//input angle of attack and delta in degrees
 		void FreestreamTable(ifstream &fin);
 		struct species
 		{
