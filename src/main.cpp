@@ -1,58 +1,85 @@
 #include <iostream>
+#include <fstream>
+#include <iomanip>
 #include <cmath>
+#include <exception>
 #include <vector>
+
 #include "std_atmosphere.h"
-#include "shocks.h"
+#include "cone.h"
+#include "EquilFlow.h"
+#include "stag_properties.h"
 
 using namespace std;
 
+const double pi = 3.14159265358979323846;
+
 int main() {
-    double z, M, delta_c_1, delta_c_2;
-    z = 105000;
-    M = 35;
-    delta_c_1 = 16;
-    delta_c_2 = 40;
+    const double a = 1.5;
+    const double b = 1.0;
+    const double delta_c1 = 29.7448 * pi / 180.0;
+    const double r_n = 0.1;
+    const double Xc = 1.75;
 
-    const vector<double> atmosphere = std_atmosphere(z, M);
+    struct FlightCondition {
+        double M;
+        double z;
+    };
+    const FlightCondition conditions[] = {{35.0, 105.0}, {22.0, 60.0}, {10.5, 45.0}};
+    const double R_air = 287.05;
+    const double gamma_air = 1.4;
 
-    cout << "Freestream properties at z = " << z << " m, M = " << M << endl;
-    cout << "Pressure: " << atmosphere[0] << " Pa" << endl;
-    cout << "Temperature: " << atmosphere[1] << " K" << endl;
-    cout << "Enthalpy: " << atmosphere[2] << " kJ/kg" << endl;
-    cout << "Density: " << atmosphere[3] << " kg/m^3" << endl;
-    cout << "Velocity: " << atmosphere[4] << " m/s" << endl <<endl;
+    ofstream csv("aero_results.csv");
+    csv << "mach,altitude_km,epsilon,alpha_deg,CA,CN,CL,CD,LD\n";
+    csv << setprecision(12);
 
-    const vector<double> normal = normal_shock(
-        atmosphere[0], atmosphere[1], atmosphere[2], atmosphere[3], atmosphere[4]);
+    for (const FlightCondition& condition : conditions) {
+        const double M = condition.M;
+        const double z = condition.z;
+        const vector<double> atmosphere = std_atmosphere(z * 1000.0, M);
+        const double P_inf = atmosphere[0];
+        const double T_inf = atmosphere[1];
+        const double rho_inf = atmosphere[3];
+        const double U_inf = atmosphere[4];
+        // For some reason the oblique shock function stalls at M= 35 with the U_inf value but works with this one
+        // we have no idea why it happens...
+        const double U_oblique = M * sqrt(gamma_air * R_air * T_inf);
 
-    cout << "Properties after normal shock" << endl;
-    cout << "Pressure: " << normal[0] << " Pa" << endl;
-    cout << "Temperature: " << normal[1] << " K" << endl;
-    cout << "Enthalpy: " << normal[2] << " kJ/kg" << endl;
-    cout << "Density: " << normal[3] << " kg/m^3" << endl;
-    cout << "Velocity: " << normal[4] << " m/s" << endl << endl;
 
-    const vector<double> oblique = oblique_shock(
-        atmosphere[0], atmosphere[1], atmosphere[2], atmosphere[3], atmosphere[4], delta_c_1);
+        EquilFlow normalShock("E10");
+        normalShock.NormalShock(P_inf, T_inf, U_inf);
+        const Results normal = stagProperties(normalShock, M, rho_inf, 0.0);
 
-    cout << "Properties after oblique shock with delta_c = " << delta_c_1 << "°" << endl;
-    cout << "Pressure: " << oblique[0] << " Pa" << endl;
-    cout << "Temperature: " << oblique[1] << " K" << endl;
-    cout << "Enthalpy: " << oblique[2] << " kJ/kg" << endl;
-    cout << "Density: " << oblique[3] << " kg/m^3" << endl;
-    cout << "Velocity: " << oblique[4] << " m/s" << endl;
-    cout << "Shock angle: " << oblique[5] << "°" << endl << endl;
+        const double epsilon = normal.epsilon;
+        const double Cpmax = 2.0 - epsilon;
+        for (int alpha = -40; alpha <= 40; ++alpha) {
+            const double alpha_rad = alpha * pi / 180.0;
+            const vector<double> coeffs = aerodynamicCoefficients(a, b, delta_c1, r_n, Xc, alpha_rad, Cpmax);
+            csv << M << ',' << z << ',' << epsilon << ',' << alpha << ','
+                << coeffs[0] << ',' << coeffs[1] << ',' << coeffs[2] << ','
+                << coeffs[3] << ',' << coeffs[4] << '\n';
+        }
 
-    const vector<double> oblique2 = oblique_shock(
-        atmosphere[0], atmosphere[1], atmosphere[2], atmosphere[3], atmosphere[4], delta_c_2);
+        cout << "\nMach " << M << " at " << z << " km\n";
+        cout << "  Normal shock: T2 = " << normal.T2 << " K, P2 = " << normal.P2
+                << " Pa, rho1/rho2 = " << epsilon << '\n'
+                << "    Mixture viscosity: " << normal.mu_mix << " Pa s\n"
+                << "    Mixture conductivity: " << normal.k_f << " W/(m K)\n"
+                << "    Average D_im: " << normal.D_im_avg_cm2s << " cm^2/s\n"
+                << "    Sutherland comparison: mu = " << normal.mu_sutherland
+                << " Pa s, k = " << normal.k_sutherland << " W/(m K)\n";
 
-    cout << "Properties after oblique shock with delta_c = " << delta_c_2 << "°" << endl;
-    cout << "Pressure: " << oblique2[0] << " Pa" << endl;
-    cout << "Temperature: " << oblique2[1] << " K" << endl;
-    cout << "Enthalpy: " << oblique2[2] << " kJ/kg" << endl;
-    cout << "Density: " << oblique2[3] << " kg/m^3" << endl;
-    cout << "Velocity: " << oblique2[4] << " m/s" << endl;
-    cout << "Shock angle: " << oblique2[5] << "°" << endl << endl;
+        for (const double theta : {20.0, 30.0}) {
+            EquilFlow obliqueShock("E10");
+            obliqueShock.ObliqueShock(P_inf, T_inf, U_oblique, theta, 0.0);
+            const Results oblique = stagProperties(obliqueShock, M, rho_inf, theta);
+            cout << "  " << theta << " deg oblique shock: T2 = "
+                    << oblique.T2 << " K, shock angle = " << oblique.WaveAngle
+                    << " deg, U2 = " << oblique.U2
+                    << " m/s, Sutherland OK: " << (oblique.Sutherland_OK ? "Yes" : "No") << '\n';
+        }
+    }
 
-    return 0;   
+    csv.close();
+    return 0;
 }

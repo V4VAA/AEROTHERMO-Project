@@ -1,8 +1,5 @@
 # AEROTHERMO Project
 
-The AE4080 driver computes freestream properties and normal and oblique
-shock results using EquilFlow.
-
 ## Set up on a new Windows PC
 
 The EquilFlow binaries require a 64-bit Windows build with MSVC. In Visual
@@ -22,15 +19,18 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\build.ps1 -Run
 ```
 
 The helper uses the CMake installation on PATH or the copy installed with
-Visual Studio. The first run builds the Release executable and prints the
-freestream and shock results. The execution policy flag applies to that
-PowerShell process.
+Visual Studio. The first run builds the Release executable and writes
+`aero_results.csv` in the repository root. The execution policy flag applies
+to that PowerShell process.
+
+In VS Code, select **Run main** and press **Ctrl+F5** to build and run, or
+**F5** to debug. This launcher requires the Microsoft C/C++ extension.
 
 ## Repository layout
 
 | Path | Contents |
 | --- | --- |
-| `src/` | Project driver, atmosphere and shock routines, and the cone aerodynamics routine. The cone routine is currently outside the executable targets. |
+| `src/` | Project driver, atmosphere and shock routines, and the cone aerodynamics routine. |
 | `EquilFlow/` | Course-supplied Phase 2 header and precompiled Debug and Release libraries for MSVC x64. |
 | `GasModels/`, `Species/` | EquilFlow runtime data. |
 | `examples/HW1.cpp` | Standalone EquilFlow composition example. |

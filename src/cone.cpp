@@ -15,36 +15,47 @@ vector<double> aerodynamicCoefficients(double a, double b, double delta_c1, doub
 
     const double dOmega = pi / 400;
 
+    // Bounds for omega integration including the shadow region
+    double omega_upper = pi/2;
+    double omega_lower = -pi/2;
+    const double absAlpha = abs(alpha);
+    if (absAlpha > delta_c1) {
+        double omega_t = asin(tan(delta_c1) / tan(absAlpha));
+        if (alpha > 0) {
+            omega_upper = omega_t;
+        } else {
+            omega_lower = -omega_t;
+        }
+    }
+    
     // Ca calculation
     double caIntegral = 0.0;
-
     double inner_integral = 0.0;
-    for (double omega = -pi/2; omega <= pi/2; omega += dOmega) {
+    for (double omega = omega_lower; omega <= omega_upper; omega += dOmega) {
         double top = sin(delta_c1) * cos(alpha) - cos(delta_c1)*sin(alpha)*sin(omega);
-        double integrand = pow(top,2) / (1 - q * q * pow(cos(omega),2));
+        double integrand = pow(top,2) / (1 - q * pow(cos(omega),2));
         inner_integral += integrand * dOmega;
     }
     caIntegral += inner_integral * (Xc*Xc - X1*X1) / 2;
 
     double noseCa = 0.5 * Cpmax * (1 - pow(sin(delta_c1),4));
-    double Ca = -noseCa * pi * r_n * r_n / Aref - 2 * Cpmax / (pi * Xc * Xc) * caIntegral;
+    double Ca = noseCa * pi * r_n * r_n / Aref + 2 * Cpmax / (pi * Xc * Xc) * caIntegral;
 
     // Cn calculation
     double cnIntegral = 0.0;
     inner_integral = 0.0;
-    for (double omega = -pi/2; omega <= pi/2; omega += dOmega) {
+    for (double omega = omega_lower; omega <= omega_upper; omega += dOmega) {
         double top = sin(delta_c1) * cos(alpha) - cos(delta_c1)*sin(alpha)*sin(omega);
-        double integrand = pow(top,2) / (1 - q * q * pow(cos(omega),2)) * sin(omega);
+        double integrand = pow(top,2) / (1 - q * pow(cos(omega),2)) * sin(omega);
         inner_integral += integrand * dOmega;
     }
     cnIntegral += inner_integral * (Xc*Xc - X1*X1) / 2;
 
     double Cn = -2 * Cpmax / (pi * b * Xc) * cnIntegral;
 
-
     double Cl = Cn * cos(alpha) - Ca * sin(alpha);
     double Cd = Cn * sin(alpha) + Ca * cos(alpha);
     double LD = Cl / Cd;
 
-    return {Cl, Cd, LD};
+    return {Ca, Cn, Cl, Cd, LD};
 }

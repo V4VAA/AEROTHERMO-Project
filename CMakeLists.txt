@@ -17,7 +17,8 @@ set_target_properties(EquilFlow PROPERTIES
     INTERFACE_INCLUDE_DIRECTORIES "${CMAKE_CURRENT_SOURCE_DIR}/EquilFlow"
 )
 
-add_executable(AE4080 src/main.cpp src/std_atmosphere.cpp src/shocks.cpp)
+add_executable(AE4080 src/main.cpp src/std_atmosphere.cpp src/shocks.cpp src/cone.cpp
+    src/stag_properties.cpp)
 add_executable(HW1 examples/HW1.cpp)
 foreach(target IN ITEMS AE4080 HW1)
     target_compile_features(${target} PRIVATE cxx_std_20)

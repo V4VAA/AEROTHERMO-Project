@@ -70,7 +70,7 @@ vector<double> std_atmosphere(double z, double M)
 
     const double h_geo = r_0 * z / (r_0 + z);
 
-    EquilFlow air6("E6");
+    EquilFlow air("E10");
 
     double Tm = 0.0;
     double T = 0.0;
@@ -91,8 +91,8 @@ vector<double> std_atmosphere(double z, double M)
         P = Pressure(Pi, Tm_i, Tm, Li, hi_geo, h_geo);
         rho = Density(P, T);
 
-        air6.Composition(1, T, P);
-        h = air6.mix.h;
+        air.Composition(1, T, P);
+        h = air.mix.h;
 
     }
     else if (h_geo < 20000.0)
@@ -107,8 +107,8 @@ vector<double> std_atmosphere(double z, double M)
         P = Pressure(Pi, Tm_i, Tm, Li, hi_geo, h_geo);
         rho = Density(P, T);
 
-        air6.Composition(1, T, P);
-        h = air6.mix.h;
+        air.Composition(1, T, P);
+        h = air.mix.h;
     }
     else if (h_geo < 32000.0)
     {
@@ -122,8 +122,8 @@ vector<double> std_atmosphere(double z, double M)
         P = Pressure(Pi, Tm_i, Tm, Li, hi_geo, h_geo);
         rho = Density(P, T);
 
-        air6.Composition(1, T, P);
-        h = air6.mix.h;
+        air.Composition(1, T, P);
+        h = air.mix.h;
     }
     else if (h_geo < 47000.0)
     {
@@ -137,8 +137,8 @@ vector<double> std_atmosphere(double z, double M)
         P = Pressure(Pi, Tm_i, Tm, Li, hi_geo, h_geo);
         rho = Density(P, T);
 
-        air6.Composition(1, T, P);
-        h = air6.mix.h;
+        air.Composition(1, T, P);
+        h = air.mix.h;
     }
     else if (h_geo < 51000.0)
     {
@@ -152,8 +152,8 @@ vector<double> std_atmosphere(double z, double M)
         P = Pressure(Pi, Tm_i, Tm, Li, hi_geo, h_geo);
         rho = Density(P, T);
 
-        air6.Composition(1, T, P);
-        h = air6.mix.h;
+        air.Composition(1, T, P);
+        h = air.mix.h;
     }
     else if (h_geo < 71000.0)
     {
@@ -167,8 +167,8 @@ vector<double> std_atmosphere(double z, double M)
         P = Pressure(Pi, Tm_i, Tm, Li, hi_geo, h_geo);
         rho = Density(P, T);
 
-        air6.Composition(1, T, P);
-        h = air6.mix.h;
+        air.Composition(1, T, P);
+        h = air.mix.h;
     }
     else if (z <= 86000.0)
     {
@@ -182,8 +182,8 @@ vector<double> std_atmosphere(double z, double M)
         P = Pressure(Pi, Tm_i, Tm, Li, hi_geo, h_geo);
         rho = Density(P, T);
 
-        air6.Composition(1, T, P);
-        h = air6.mix.h;
+        air.Composition(1, T, P);
+        h = air.mix.h;
     }
     else if (z < 100000.0)
     {
@@ -202,8 +202,8 @@ vector<double> std_atmosphere(double z, double M)
         P = UpperPressure(Pi, Tm_i, Tm, Li, zi, z, molecularWeight);
         rho = UpperDensity(Pi, T_i, Tm_i, Tm, Li, zi, z, molecularWeight);
 
-        air6.Composition(1, T, P);
-        h = air6.mix.h;
+        air.Composition(1, T, P);
+        h = air.mix.h;
     }
     else if (z < 110000.0)
     {
@@ -222,8 +222,8 @@ vector<double> std_atmosphere(double z, double M)
         P = UpperPressure(Pi, Tm_i, Tm, Li, zi, z, molecularWeight);
         rho = UpperDensity(Pi, T_i, Tm_i, Tm, Li, zi, z, molecularWeight);
 
-        air6.Composition(1, T, P);
-        h = air6.mix.h;
+        air.Composition(1, T, P);
+        h = air.mix.h;
     }
     else if (z < 120000.0)
     {
@@ -242,8 +242,8 @@ vector<double> std_atmosphere(double z, double M)
         P = UpperPressure(Pi, Tm_i, Tm, Li, zi, z, molecularWeight);
         rho = UpperDensity(Pi, T_i, Tm_i, Tm, Li, zi, z, molecularWeight);
 
-        air6.Composition(1, T, P);
-        h = air6.mix.h;
+        air.Composition(1, T, P);
+        h = air.mix.h;
     }
     else
     {
@@ -262,8 +262,8 @@ vector<double> std_atmosphere(double z, double M)
         P = UpperPressure(Pi, Tm_i, Tm, Li, zi, z, molecularWeight);
         rho = UpperDensity(Pi, T_i, Tm_i, Tm, Li, zi, z, molecularWeight);
 
-        air6.Composition(1, T, P);
-        h = air6.mix.h;
+        air.Composition(1, T, P);
+        h = air.mix.h;
     }
 
     const double a = sqrt(gamma * R * T / molecularWeight);
